@@ -52,7 +52,7 @@ def recieveMsg(sock):
     msgLen = 0
     newMsg = True
     while True:
-        msg = s.recv(20)
+        msg = sock.recv(20)
         if newMsg:
             msgLen = int(msg[:HEADERSIZE])
             newMsg = False
