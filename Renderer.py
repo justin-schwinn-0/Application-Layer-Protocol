@@ -14,9 +14,26 @@ def main():
     r.bind((socket.gethostname(), 1234)) 
     r.listen(5)
 
-    while True:
-        break # checks to see if anything connected with renderer
+    rendering = False
+    message = ""
 
+    while True: # May need to use select to manage connections if issues arise
+        clientSocket, clientAddress = r.accept()
+        message = recieveMsg(clientSocket)
+        if message.lower() == "render":
+            message = recieveMsg(r)
+            # Ask the server to render a file, send invalid to client if no file found
+        elif message.lower() == "pause":
+            # Tell server to stop byte stream
+            sendMsg(r,"pause")
+        elif message.lower() == "resume":
+            # Tell server to resume byte stream
+            sendMsg(r,"resume")
+        elif message.lower() == "restart":
+            # Ask server to render message from the start
+            sendMsg(r,"restart")
+
+    # Find a way to break code once client disconnects from renderer
     s.close()
 
 def recieveMsg(sock):

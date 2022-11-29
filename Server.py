@@ -9,7 +9,7 @@ def main():
     s.bind((socket.gethostname(), 1234)) 
     s.listen(5)
 
-    socketList = [s]
+    socketList = [s] # This is probably unecessary, but storing the list of all connected clients for now
     clients = {}
 
     while True:
@@ -26,22 +26,22 @@ def main():
                 print('Accepted connection from {}:{}, From: {}'.format(*clientAddress, clientType['data'].decode('utf-8')))
             else:
                 message = recieveMsg(sock)
-                
+
                 if message == False:
                     print('Closed connection from: {}'.format(clients[sock]['data'].decode('utf-8')))
                     socketList.remove(sock)
                     del clients[sock]
                     continue
                 elif message.lower() == "sendlist":
-                    break
-                elif message.lower() == "render": # Figure out how to do this
-                    break
+                    sendMsg(sock, getMediaList())
                 elif message.lower() == "pause": # Figure out how to do this
                     break
                 elif message.lower() == "resume": # Figure out how to do this
                     break
                 elif message.lower() == "restart": # Figure out how to do this
                     break
+                else: # If none of the previous messages match, assume that message is filename to be rendered
+                    break # send stream to renderer if file found, else send invalid to renderer
 
 
 
@@ -69,8 +69,11 @@ def sendMsg(sock, message):
     sock.send(bytes(msg,"utf-8"))
 
 def getMediaList():
-    test = 1
+    return "List"
     # Returns a string of all media in a file
+
+def getFile(filename):
+    return "Bytestream of file"
 
 if __name__ == "__main__":
     main()
