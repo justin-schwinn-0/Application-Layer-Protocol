@@ -59,7 +59,7 @@ def recieveMsg(sock):
 
         if len(fullMsg) - HEADERSIZE == msgLen:
             print("Full message is recieved")
-            return fullMsg
+            return fullMsg[HEADERSIZE:]
 
 def sendMsg(sock, message):
     msg = f"{len(message):<{HEADERSIZE}}" + message

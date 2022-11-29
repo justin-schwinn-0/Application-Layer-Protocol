@@ -49,7 +49,7 @@ def main():
             break
         else:
             print("Invalid command\n")
-    ##s.close()
+    s.close()
     r.close()
 
 def recieveMsg(sock):
