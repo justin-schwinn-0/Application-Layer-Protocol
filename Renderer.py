@@ -11,7 +11,7 @@ def main():
     sendMsg(s, "renderer")
 
     r = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Binds the render to localhost port 1234
-    r.bind((socket.gethostname(), 1234)) 
+    r.bind((socket.gethostname(), 1235)) 
     r.listen(5)
 
     rendering = False
