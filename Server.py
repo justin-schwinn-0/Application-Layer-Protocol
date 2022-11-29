@@ -14,15 +14,35 @@ def main():
 
     while True:
         readSocket, _, excepSocket = select.select(socketList, [], socketList)
-        for newSocket in readSocket:
-            if newSocket == s:
+        for sock in readSocket:
+            if sock == s:
                 clientSocket, clientAddress = s.accept()
                 clientType = recieveMsg(clientSocket)
-                if clientType is False:
+                if clientType == False:
                     print("Client has disconnected\n")
                     continue
                 socketList.append(clientSocket)
-                clients[clientSocket]
+                clients[clientSocket] = clientType
+                print('Accepted connection from {}:{}, From: {}'.format(*clientAddress, clientType['data'].decode('utf-8')))
+            else:
+                message = recieveMsg(sock)
+                
+                if message == False:
+                    print('Closed connection from: {}'.format(clients[sock]['data'].decode('utf-8')))
+                    socketList.remove(sock)
+                    del clients[sock]
+                    continue
+                elif message.lower() == "sendlist":
+                    break
+                elif message.lower() == "render": # Figure out how to do this
+                    break
+                elif message.lower() == "pause": # Figure out how to do this
+                    break
+                elif message.lower() == "resume": # Figure out how to do this
+                    break
+                elif message.lower() == "restart": # Figure out how to do this
+                    break
+
 
 
 def recieveMsg(sock):
