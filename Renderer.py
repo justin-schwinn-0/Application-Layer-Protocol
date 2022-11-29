@@ -21,45 +21,51 @@ def main():
     rendering = False
     message = ""
 
+    clientSocket, clientAddress = r.accept()
     while True: # May need to use select to manage connections if issues arise
-        clientSocket, clientAddress = r.accept()
         message = recieveMsg(clientSocket)
-        print(message)
-        if message.lower() == "render":
-            message = recieveMsg(r)
-            print("render recieved!!!")
-            # Ask the server to render a file, send invalid to client if no file found
-        elif message.lower() == "pause":
-            # Tell server to stop byte stream
-            print("pause recieved!!!")
-            ##sendMsg(s,"pause")
-        elif message.lower() == "resume":
-            # Tell server to resume byte stream
-            print("resume recieved!!!")
-            ##sendMsg(s,"resume")
-        elif message.lower() == "restart":
-            # Ask server to render message from the start
-            print("restart recieved!!!")
-            ##sendMsg(s,"restart")
+        if message != False:
+            if message.lower() == "render":
+                message = recieveMsg(clientSocket)
+                print('rendering file {}'.format(message))
+                sendMsg(s, message)
+                # Ask the server to render a file, send invalid to client if no file found
+            elif message.lower() == "pause":
+                # Tell server to stop byte stream
+                print("pause recieved!!!")
+                sendMsg(s,"pause")
+            elif message.lower() == "resume":
+                # Tell server to resume byte stream
+                print("resume recieved!!!")
+                sendMsg(s,"resume")
+            elif message.lower() == "restart":
+                # Ask server to render message from the start
+                print("restart recieved!!!")
+                sendMsg(s,"restart")
+        else:
+            print("Connection was forcibly closed")
+            break
 
     # Find a way to break code once client disconnects from renderer
     s.close()
 
 def recieveMsg(sock):
-    fullMsg = ""
-    msgLen = 0
-    newMsg = True
-    while True:
-        msg = sock.recv(20)
-        if newMsg:
-            msgLen = int(msg[:HEADERSIZE])
-            newMsg = False
+    try:
+        fullMsg = ""
+        msgLen = 0
+        newMsg = True
+        while True:
+            msg = sock.recv(20)
+            if newMsg:
+                msgLen = int(msg[:HEADERSIZE])
+                newMsg = False
 
-        fullMsg += msg.decode("utf-8")
+            fullMsg += msg.decode("utf-8")
 
-        if len(fullMsg) - HEADERSIZE == msgLen:
-            print("Full message is recieved")
-            return fullMsg[HEADERSIZE:]
+            if len(fullMsg) - HEADERSIZE == msgLen:
+                return fullMsg[HEADERSIZE:]
+    except:
+        return False
 
 def sendMsg(sock, message):
     msg = f"{len(message):<{HEADERSIZE}}" + message

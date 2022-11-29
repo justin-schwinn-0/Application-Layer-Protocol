@@ -13,7 +13,6 @@ def main():
     clients = {}
 
     while True:
-        print("Running server")
         readSocket, _, excepSocket = select.select(socketList, [], socketList)
         for sock in readSocket:
             if sock == s:
@@ -39,15 +38,16 @@ def main():
                     del clients[sock]
                     continue
                 elif message.lower() == "sendlist":
-                    sendMsg(sock, getMediaList())
+                    ##sendMsg(sock, getMediaList())
+                    sendMsg(sock, "Example list")
                 elif message.lower() == "pause": # Figure out how to do this
-                    break
+                    print("pausing stream")
                 elif message.lower() == "resume": # Figure out how to do this
-                    break
+                    print("resuming stream")
                 elif message.lower() == "restart": # Figure out how to do this
-                    break
+                    print("restarting stream")
                 else: # If none of the previous messages match, assume that message is filename to be rendered
-                    break # send stream to renderer if file found, else send invalid to renderer
+                    print('rendering file {}'.format(message)) # send stream to renderer if file found, else send invalid to renderer
 
 
 
@@ -65,7 +65,6 @@ def recieveMsg(sock):
             fullMsg += msg.decode("utf-8")
 
             if len(fullMsg) - HEADERSIZE == msgLen:
-                print("Full message is recieved")
                 return fullMsg[HEADERSIZE:]
     except:
         return False

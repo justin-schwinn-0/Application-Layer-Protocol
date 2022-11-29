@@ -26,16 +26,19 @@ def main():
         userInput = input("Input command: ")
         if userInput.lower() == "list":
             # Tells the server to send a list of media in a file
-            ##sendMsg(s,"SendList")
-            ##message = recieveMsg(s)
-            continue
+            sendMsg(s,"SendList")
+            message = recieveMsg(s)
+            print(message)
         elif userInput.lower() == "render":
             # Tells renderer to render a certain file
+            sendMsg(r,"render")
             userInput = input("Input file to render: ")
             sendMsg(r,userInput)
-            message = recieveMsg(r)
-            if message.lower() == "invalid":
-                print("Invalid filename")
+            ###
+            #message = recieveMsg(r)
+            #if message.lower() == "invalid":
+                #print("Invalid filename")
+            ###
         elif userInput.lower() == "pause":
             # Send pause message to renderer
             sendMsg(r,"pause")
@@ -53,20 +56,22 @@ def main():
     r.close()
 
 def recieveMsg(sock):
-    fullMsg = ""
-    msgLen = 0
-    newMsg = True
-    while True:
-        msg = sock.recv(20)
-        if newMsg:
-            msgLen = int(msg[:HEADERSIZE])
-            newMsg = False
+    try:
+        fullMsg = ""
+        msgLen = 0
+        newMsg = True
+        while True:
+            msg = sock.recv(20)
+            if newMsg:
+                msgLen = int(msg[:HEADERSIZE])
+                newMsg = False
 
-        fullMsg += msg.decode("utf-8")
+            fullMsg += msg.decode("utf-8")
 
-        if len(fullMsg) - HEADERSIZE == msgLen:
-            print("Full message is recieved")
-            return fullMsg[HEADERSIZE:]
+            if len(fullMsg) - HEADERSIZE == msgLen:
+                return fullMsg[HEADERSIZE:]
+    except:
+        return False
 
 def sendMsg(sock, message):
     msg = f"{len(message):<{HEADERSIZE}}" + message
