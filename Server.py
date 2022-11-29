@@ -13,6 +13,7 @@ def main():
     clients = {}
 
     while True:
+        print("Running server")
         readSocket, _, excepSocket = select.select(socketList, [], socketList)
         for sock in readSocket:
             if sock == s:

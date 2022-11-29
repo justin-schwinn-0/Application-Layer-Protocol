@@ -4,9 +4,9 @@ HEADERSIZE = 10
 
 def main():
     serverIP = input("Server IP: ")
-    serverPort = input("Server Port: ")
+    serverPort = int(input("Server Port: "))
     renderIP = input("Renderer IP: ")
-    renderPort = input("Renderer Port: ")
+    renderPort = int(input("Renderer Port: "))
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((serverIP, serverPort))
