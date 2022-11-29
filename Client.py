@@ -3,17 +3,21 @@ import socket
 HEADERSIZE = 10
 
 def main():
-    serverIP = input("Server IP: ")
-    serverPort = int(input("Server Port: "))
-    renderIP = input("Renderer IP: ")
-    renderPort = int(input("Renderer Port: "))
+    ###
+    #serverIP = input("Server IP: ")
+    #serverPort = int(input("Server Port: "))
+    #renderIP = input("Renderer IP: ")
+    #renderPort = int(input("Renderer Port: "))
+    ###
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((serverIP, serverPort))
+    #s.connect((serverIP, serverPort))
+    s.connect((socket.gethostname(), 1249)) # For testing on local host
     sendMsg(s, "client")
 
     r = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    r.connect((renderIP, renderPort))
+    ##r.connect((renderIP, renderPort))
+    r.connect((socket.gethostname(), 1250)) # For testing on local host
     print("Commands: \"list\", \"render\", \"pause\", \"resume\", \"restart\", \"exit\"\n")
 
     userInput = ""
@@ -22,8 +26,9 @@ def main():
         userInput = input("Input command: ")
         if userInput.lower() == "list":
             # Tells the server to send a list of media in a file
-            sendMsg(s,"SendList")
-            message = recieveMsg(s)
+            ##sendMsg(s,"SendList")
+            ##message = recieveMsg(s)
+            continue
         elif userInput.lower() == "render":
             # Tells renderer to render a certain file
             userInput = input("Input file to render: ")
@@ -44,7 +49,7 @@ def main():
             break
         else:
             print("Invalid command\n")
-    s.close()
+    ##s.close()
     r.close()
 
 def recieveMsg(sock):
@@ -61,7 +66,7 @@ def recieveMsg(sock):
 
         if len(fullMsg) - HEADERSIZE == msgLen:
             print("Full message is recieved")
-            return fullMsg
+            return fullMsg[HEADERSIZE:]
 
 def sendMsg(sock, message):
     msg = f"{len(message):<{HEADERSIZE}}" + message

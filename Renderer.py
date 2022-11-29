@@ -3,15 +3,19 @@ import socket
 HEADERSIZE = 10
 
 def main():
-    serverIP = input("Server IP: ")
-    serverPort = int(input("Server Port: "))
+    ###
+    #serverIP = input("Server IP: ")
+    #serverPort = int(input("Server Port: "))
+    ###
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((serverIP, serverPort))
+    ##s.connect((serverIP, serverPort))
+    s.connect((socket.gethostname(), 1249))
     sendMsg(s, "renderer")
 
     r = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Binds the render to localhost port 1234
-    r.bind((socket.gethostname(), 1235)) 
+    ##r.bind((socket.gethostname(), 1235)) 
+    r.bind((socket.gethostname(), 1250))
     r.listen(5)
 
     rendering = False
@@ -20,18 +24,23 @@ def main():
     while True: # May need to use select to manage connections if issues arise
         clientSocket, clientAddress = r.accept()
         message = recieveMsg(clientSocket)
+        print(message)
         if message.lower() == "render":
             message = recieveMsg(r)
+            print("render recieved!!!")
             # Ask the server to render a file, send invalid to client if no file found
         elif message.lower() == "pause":
             # Tell server to stop byte stream
-            sendMsg(r,"pause")
+            print("pause recieved!!!")
+            ##sendMsg(s,"pause")
         elif message.lower() == "resume":
             # Tell server to resume byte stream
-            sendMsg(r,"resume")
+            print("resume recieved!!!")
+            ##sendMsg(s,"resume")
         elif message.lower() == "restart":
             # Ask server to render message from the start
-            sendMsg(r,"restart")
+            print("restart recieved!!!")
+            ##sendMsg(s,"restart")
 
     # Find a way to break code once client disconnects from renderer
     s.close()
