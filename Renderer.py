@@ -1,7 +1,10 @@
 import socket
 
 HEADERSIZE = 10
+DEFAULT_SEG_SIZE = 256
+COMMANDS = ["list","render","pause","resume","restart","exit"]
 
+afnjk = "sendlist"
 def main():
     ###
     #serverIP = input("Server IP: ")
@@ -10,38 +13,60 @@ def main():
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ##s.connect((serverIP, serverPort))
-    s.connect((socket.gethostname(), 1249))
-    sendMsg(s, "renderer")
+    s.connect((socket.gethostname(), 31249))
+    sendMsg(s, "renderer connected")
 
     r = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Binds the render to localhost port 1234
     ##r.bind((socket.gethostname(), 1235)) 
-    r.bind((socket.gethostname(), 1250))
+    r.bind((socket.gethostname(), 31250))
     r.listen(5)
 
-    rendering = False
+    
     message = ""
+
+    renderProgress = int()
+    filename = ""
 
     clientSocket, clientAddress = r.accept()
     while True: # May need to use select to manage connections if issues arise
         message = recieveMsg(clientSocket)
         if message != False:
-            if message.lower() == "render":
-                message = recieveMsg(clientSocket)
-                print('rendering file {}'.format(message))
-                sendMsg(s, message)
+            if message == "render":
+                print("Render received")
+
+                filename = recieveMsg(clientSocket) # receive file name
+                renderProgress = 0
+                sendClientChunk(s,clientSocket,filename,renderProgress)
+
                 # Ask the server to render a file, send invalid to client if no file found
-            elif message.lower() == "pause":
+            elif message == "pause":
                 # Tell server to stop byte stream
-                print("pause recieved!!!")
-                sendMsg(s,"pause")
-            elif message.lower() == "resume":
-                # Tell server to resume byte stream
-                print("resume recieved!!!")
-                sendMsg(s,"resume")
-            elif message.lower() == "restart":
+                print("pause recieved")
+
+            elif message == "resume":
+                # Tell server to send next packet
+                print("resume recieved")
+
+                if(filename == ""):
+                    sendMsg(clientSocket,"Must choose a file to render first")
+                else:
+                    renderProgress+=DEFAULT_SEG_SIZE
+                    sendClientChunk(s,clientSocket,filename,renderProgress)
+
+            elif message == "restart":
                 # Ask server to render message from the start
-                print("restart recieved!!!")
-                sendMsg(s,"restart")
+                print("restart recieved")
+                
+                if(filename == ""):
+                    sendMsg(clientSocket,"Must choose a file to render first")
+                else:
+                    renderProgress = 0
+                    sendClientChunk(s,clientSocket,filename,renderProgress)
+            elif message == "list" :
+                print("list recieved")
+                sendMsg(s,message)
+                forwardMsg(s,clientSocket)
+
         else:
             print("Connection was forcibly closed")
             break
@@ -49,7 +74,12 @@ def main():
     # Find a way to break code once client disconnects from renderer
     s.close()
 
-def recieveMsg(sock):
+def forwardMsg(sender:socket.socket, receiver:socket.socket):
+    d = sender.recv(DEFAULT_SEG_SIZE)
+    receiver.send(d)
+    return
+
+def recieveMsg(sock:socket.socket)-> str:
     try:
         fullMsg = ""
         msgLen = 0
@@ -67,9 +97,23 @@ def recieveMsg(sock):
     except:
         return False
 
-def sendMsg(sock, message):
+def sendMsg(sock:socket.socket, message:str):
     msg = f"{len(message):<{HEADERSIZE}}" + message
-    sock.send(bytes(msg,"utf-8"))
+    sock.send(msg.encode())
+
+def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
+    
+    serverCommand = f"read {filename} {rProg}"
+
+    print(f"sending: {serverCommand}")
+    sendMsg(s, serverCommand)
+    return
+
+def sendClientChunk(s:socket.socket,c:socket.socket,filename:str,rProg:int):
+    
+    sendChunkRequest(s,filename=filename,rProg=rProg)
+    forwardMsg(sender=s,receiver=c)
+
 
 if __name__ == "__main__":
     main()
