@@ -3,6 +3,7 @@ import select
 import os
 
 HEADERSIZE = 10
+DEFAULT_SEG_SIZE = 256
 
 def main():
 
@@ -10,7 +11,7 @@ def main():
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Binds the render to localhost port 1234
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind((socket.gethostname(), 1249)) 
+    s.bind((socket.gethostname(), 31249)) 
     s.listen(5)
 
     socketList = [s] # This is probably unecessary, but storing the list of all connected clients for now
@@ -41,21 +42,29 @@ def main():
                     socketList.remove(sock)
                     del clients[sock]
                     continue
-                elif message.lower() == "sendlist":
-                    ##sendMsg(sock, getMediaList())
-                    sendMsg(sock, "Example list")
-                elif message.lower() == "pause": # Figure out how to do this
-                    print("pausing stream")
-                elif message.lower() == "resume": # Figure out how to do this
-                    print("resuming stream")
-                elif message.lower() == "restart": # Figure out how to do this
-                    print("restarting stream")
+                
+                msgsplits = message.split(" ")
+                cmd = msgsplits[0].lower()
+                content = msgsplits[1:]
+
+                if cmd == "list":
+                    
+                    sendMsg(sock, getMediaList())
+                    #sendMsg(sock, "Example list")
+                    
+                elif cmd == "read": # format of read is 'read <file name> <byte offeset>'
+                    
+                    print(content)
+
+                    data = getMediaChunk(content[0],int(content[1]))
+                    sendMsg(sock,data)
+                    
                 else: # If none of the previous messages match, assume that message is filename to be rendered
-                    print('rendering file {}'.format(message)) # send stream to renderer if file found, else send invalid to renderer
+                    print("Unknown command") # send stream to renderer if file found, else send invalid to renderer
 
 
 
-def recieveMsg(sock : socket.socket):
+def recieveMsg(sock:socket.socket)-> str:
     try:
         fullMsg = ""
         msgLen = 0
@@ -73,9 +82,10 @@ def recieveMsg(sock : socket.socket):
     except:
         return False
 
-def sendMsg(sock :socket.socket, message : str):
+def sendMsg(sock:socket.socket, message):
+    print(f"sending: {message}")
     msg = f"{len(message):<{HEADERSIZE}}" + message
-    sock.send(bytes(msg,"utf-8"))
+    sock.send(msg.encode())
 
 def getMediaList()-> str:
     
@@ -93,6 +103,16 @@ def getMediaList()-> str:
 
     return dataList
     # Returns a string of all media in a file
+def getMediaChunk(filename:str, offset:int = 0)-> str :
+    data = getFile(filename)
+
+    start = offset if offset < len(data) else len(data)
+    end = offset + DEFAULT_SEG_SIZE if(offset + DEFAULT_SEG_SIZE < len(data)) else len(data)
+
+    print(f"Start: {start}, End: {end}")
+
+    asdjha = data[start:end]
+    return asdjha
 
 def getFile(filename :str):
 
@@ -102,13 +122,17 @@ def getFile(filename :str):
 
         print(f"File \'{filename}\' found...")
         path = "files/"+filename
-        return open(path).read()
+        data = open(path).read()
+        print(f"File of {len(data)} bytes")
+        return data
     else:
         return "File not found"
                     
 
 
 if __name__ == "__main__":
-    print(getMediaList())
-    print(getFile('stuff.txt'))
-    #main()
+    #print(getMediaList())
+    #print(getFile('stuff.txt'))
+    #print()
+    #print(getMediaChunk("stuff.txt"))
+    main()

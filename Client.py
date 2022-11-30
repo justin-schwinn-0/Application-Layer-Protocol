@@ -2,6 +2,10 @@ import socket
 
 HEADERSIZE = 10
 
+DEFAULT_SEG_SIZE = 256
+
+COMMANDS = ["list","render","pause","resume","restart","exit"]
+
 def main():
     ###
     #serverIP = input("Server IP: ")
@@ -10,52 +14,51 @@ def main():
     #renderPort = int(input("Renderer Port: "))
     ###
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #s.connect((serverIP, serverPort))
-    s.connect((socket.gethostname(), 1249)) # For testing on local host
-    sendMsg(s, "client")
-
     r = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ##r.connect((renderIP, renderPort))
-    r.connect((socket.gethostname(), 1250)) # For testing on local host
-    print("Commands: \"list\", \"render\", \"pause\", \"resume\", \"restart\", \"exit\"\n")
+    r.connect((socket.gethostname(), 31250)) # For testing on local host
 
     userInput = ""
     message = ""
     while True:
-        userInput = input("Input command: ")
-        if userInput.lower() == "list":
-            # Tells the server to send a list of media in a file
-            sendMsg(s,"SendList")
-            message = recieveMsg(s)
-            print(message)
-        elif userInput.lower() == "render":
+        userInput = inputCommand()
+        if (userInput == "exit"):
+            break
+        elif userInput == "render":
             # Tells renderer to render a certain file
             sendMsg(r,"render")
             userInput = input("Input file to render: ")
             sendMsg(r,userInput)
+            print(recieveMsg(r))
             ###
             #message = recieveMsg(r)
             #if message.lower() == "invalid":
                 #print("Invalid filename")
             ###
-        elif userInput.lower() == "pause":
-            # Send pause message to renderer
-            sendMsg(r,"pause")
-        elif userInput.lower() == "resume":
-            # Send resume message to renderer
-            sendMsg(r,"resume")
-        elif userInput.lower() == "restart":
-            # Send restart message to renderer
-            sendMsg(r,"restart")
-        elif userInput.lower() == "exit":
-            break
-        else:
-            print("Invalid command\n")
-    s.close()
+        else: 
+            sendMsg(r,userInput)
+            print(recieveMsg(r))
     r.close()
 
-def recieveMsg(sock):
+def inputCommand() -> str: # ensures a valid command is input at call, also ensures it is in lowercase
+    printCommands()
+    cm = input("Input Command: ").lower()
+
+    while cm not in COMMANDS:
+        printCommands()
+        cm = input("Invalid command, Input command: ")
+        
+
+    return cm
+
+def printCommands():
+    print("Avalible commands:\n")
+    line = "\t"
+    for s in COMMANDS:
+        line += s + " "
+    print(line+"\n")
+
+def recieveMsg(sock:socket.socket)-> str:
     try:
         fullMsg = ""
         msgLen = 0
@@ -73,9 +76,9 @@ def recieveMsg(sock):
     except:
         return False
 
-def sendMsg(sock, message):
+def sendMsg(sock:socket.socket, message:str):
     msg = f"{len(message):<{HEADERSIZE}}" + message
-    sock.send(bytes(msg,"utf-8"))
+    sock.send(msg.encode())
 
 if __name__ == "__main__":
     main()
