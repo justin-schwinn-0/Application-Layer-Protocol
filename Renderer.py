@@ -160,6 +160,8 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
             #time.sleep(0.5)
             #print(f"looping filesize: {fileSize}, proggress: {rProg}")
             sendChunkRequest(s,filename=filename,rProg=rProg)
+            if rProg == -1:
+                rProg = 0
             #d = s.recv(DEFAULT_SEG_SIZE)
             d = recieveMsg(s)
             print(f"test {d}")

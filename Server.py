@@ -65,7 +65,7 @@ def main():
                         sendMsg(sock,f"{fileSize}")
                         data = getMediaChunk(content[0],int(content[1]))
                         sendMsg(sock,data)
-                    elif int(content[1] == -1):
+                    elif int(content[1]) == -1:
                         data = getMediaChunk(content[0],0)
                         sendMsg(sock,data)
                     else:
