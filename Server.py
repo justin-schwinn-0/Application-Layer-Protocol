@@ -107,7 +107,7 @@ def getFileSize(filename:str):
     fileList = os.listdir('files')
 
     if(filename in fileList):
-        stats = os.stat(os.path.abspath(f"files\\{filename}"))
+        stats = os.stat(os.path.abspath(f"files/{filename}"))
         size = stats.st_size
         print(f"filesize: {size}")
         return size
