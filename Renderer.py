@@ -96,7 +96,7 @@ def recieveMsg(sock:socket.socket)-> str:
         msgLen = 0
         newMsg = True
         while True:
-            msg = sock.recv(20)
+            msg = sock.recv(DEFAULT_SEG_SIZE + 10)
             if newMsg:
                 msgLen = int(msg[:HEADERSIZE])
                 newMsg = False
@@ -126,14 +126,16 @@ def sendClientChunk(s:socket.socket,c:socket.socket,filename:str,rProg:int): # T
         sendChunkRequest(s,filename=filename,rProg=rProg)
         fileSize = int(recieveMsg(s))
         print(f"Filesize: {fileSize}")
-        d = s.recv(DEFAULT_SEG_SIZE)
+        #d = s.recv(DEFAULT_SEG_SIZE)
+        d = recieveMsg(s)
         print(f"test {d}")
         rProg += DEFAULT_SEG_SIZE
     
     while fileSize > rProg:
-        print("looping")
+        print(f"looping filesize: {fileSize}, proggress: {rProg}")
         sendChunkRequest(s,filename=filename,rProg=rProg)
-        d = s.recv(DEFAULT_SEG_SIZE)
+        #d = s.recv(DEFAULT_SEG_SIZE)
+        d = recieveMsg(s)
         print(f"test {d}")
         rProg += DEFAULT_SEG_SIZE
         ##forwardMsg(sender=s,receiver=c)
