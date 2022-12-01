@@ -1,6 +1,8 @@
 import socket
 import select
-import time
+import sys
+
+serverIP = "gfhjbmjkhgkvb"
 
 HEADERSIZE = 10
 DEFAULT_SEG_SIZE = 256
@@ -171,4 +173,9 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
 
 
 if __name__ == "__main__":
+    if(len(sys.argv) != 2):
+        print("Invalid arguments, try Rednerer.py <server IP>")
+        exit()
+    else:
+        serverIP = sys.argv[1]
     main()

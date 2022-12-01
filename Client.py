@@ -1,4 +1,12 @@
 import socket
+import sys
+
+
+serverIP = ""
+serverPort = 31249
+
+renderIP = ""
+renderPort = 31250
 
 HEADERSIZE = 10
 
@@ -24,7 +32,6 @@ def main():
     sendMsg(s, "controller connected")
 
     userInput = ""
-    message = ""
     while True:
         userInput = inputCommand()
 
@@ -91,4 +98,12 @@ def sendMsg(sock:socket.socket, message:str):
     sock.send(msg.encode())
 
 if __name__ == "__main__":
+    print("test")
+    if(len(sys.argv) != 3):
+        print("Invalid arguments, try Client.py <server IP> <Renderer IP>")
+        exit()
+    else:
+        serverIP = sys.argv[1]
+        renderIP = sys.argv[2]
+        
     main()
