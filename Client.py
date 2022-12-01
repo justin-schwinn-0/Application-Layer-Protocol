@@ -43,8 +43,8 @@ def main():
                 #print("Invalid filename")
             ###
         elif userInput == "list": 
-            sendMsg(r,userInput)
-            print(recieveMsg(r))
+            sendMsg(s,userInput)
+            print(recieveMsg(s))
         elif userInput == "pause" or userInput == "resume" or userInput == "restart":
             sendMsg(r, userInput)
     r.close()
