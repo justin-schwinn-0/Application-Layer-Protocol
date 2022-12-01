@@ -100,7 +100,7 @@ def sendMsg(sock:socket.socket, message:str):
 if __name__ == "__main__":
     print("test")
     if(len(sys.argv) != 3):
-        print("Invalid arguments, try Client.py <server IP> <Renderer IP>")
+        print("Invalid arguments, try Client.py <Server IP> <Renderer IP>")
         exit()
     else:
         serverIP = sys.argv[1]

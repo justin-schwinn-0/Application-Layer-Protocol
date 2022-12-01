@@ -3,6 +3,7 @@ import select
 import sys
 
 serverIP = "gfhjbmjkhgkvb"
+renderIP = ""
 
 HEADERSIZE = 10
 DEFAULT_SEG_SIZE = 256
@@ -17,12 +18,12 @@ def main():
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ##s.connect((serverIP, serverPort))
-    s.connect((socket.gethostname(), 31249))
+    s.connect((serverIP, 31249))
     sendMsg(s, "renderer connected")
 
     r = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Binds the render to localhost port 1234
     ##r.bind((socket.gethostname(), 1235)) 
-    r.bind((socket.gethostname(), 31250))
+    r.bind((renderIP, 31250))
     r.listen(5)
 
     
@@ -173,9 +174,10 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
 
 
 if __name__ == "__main__":
-    if(len(sys.argv) != 2):
-        print("Invalid arguments, try Rednerer.py <server IP>")
+    if(len(sys.argv) != 3):
+        print("Invalid arguments, try Rednerer.py <server IP> <Renderer IP>")
         exit()
     else:
         serverIP = sys.argv[1]
+        renderIP = sys.argv[2]
     main()
