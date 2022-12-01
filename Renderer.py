@@ -30,6 +30,7 @@ def main():
     clientSocket, clientAddress = r.accept()
     while True: # May need to use select to manage connections if issues arise
         message = recieveMsg(clientSocket)
+        print(message)
         if message != False:
             if message == "render":
                 print("Render received")
@@ -62,7 +63,7 @@ def main():
                 else:
                     renderProgress = 0
                     sendClientChunk(s,clientSocket,filename,renderProgress)
-            elif message == "list" :
+            elif message == "list" : # unecessary delete once you fix the issue
                 print("list recieved")
                 sendMsg(s,message)
                 forwardMsg(s,clientSocket)
@@ -74,8 +75,10 @@ def main():
     # Find a way to break code once client disconnects from renderer
     s.close()
 
-def forwardMsg(sender:socket.socket, receiver:socket.socket):
+def forwardMsg(sender:socket.socket, receiver:socket.socket): # Not necessary
     d = sender.recv(DEFAULT_SEG_SIZE)
+    print("test")
+    print(f"test {d}")
     receiver.send(d)
     return
 

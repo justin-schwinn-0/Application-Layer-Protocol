@@ -18,26 +18,35 @@ def main():
     ##r.connect((renderIP, renderPort))
     r.connect((socket.gethostname(), 31250)) # For testing on local host
 
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    ##s.connect((renderIP, renderPort))
+    s.connect((socket.gethostname(), 31249)) # For testing on local host
+    sendMsg(s, "controller connected")
+
     userInput = ""
     message = ""
     while True:
         userInput = inputCommand()
-        if (userInput == "exit"):
+
+        ## Whole thing is pretty much broke. Fix it by adding in the separate commands again
+        if userInput == "exit":
             break
         elif userInput == "render":
             # Tells renderer to render a certain file
             sendMsg(r,"render")
             userInput = input("Input file to render: ")
             sendMsg(r,userInput)
-            print(recieveMsg(r))
+            ##print(recieveMsg(r)) # commented to see if rendering can be done in renderer
             ###
             #message = recieveMsg(r)
             #if message.lower() == "invalid":
                 #print("Invalid filename")
             ###
-        else: 
+        elif userInput == "list": 
             sendMsg(r,userInput)
             print(recieveMsg(r))
+        elif userInput == "pause" or userInput == "resume" or userInput == "restart":
+            sendMsg(r, userInput)
     r.close()
 
 def inputCommand() -> str: # ensures a valid command is input at call, also ensures it is in lowercase
