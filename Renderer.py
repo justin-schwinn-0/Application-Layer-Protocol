@@ -134,15 +134,26 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
         rProg += DEFAULT_SEG_SIZE
 
     c.setblocking(0) # Added to get the pause, resume, restart working
+    paused = False
 
     while fileSize > rProg:
         ready = select.select([c], [], [], 0.5) # Added
         if ready[0]:
-            print("THIS WORKED!!!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Pausing works!!!!")
             data = recieveMsg(c)
-            print(data)
-            break
-        else: 
+            if data == "pause":
+                print("pausing stream")
+                paused = True
+
+            elif data == "resume": # Fix this
+                print("resuming stream")
+                paused = False
+
+            elif data == "restart":
+                print("restarting stream")
+                rProg = 0
+            else:
+                print("command not recognized")
+        elif paused == False: 
             #time.sleep(0.5)
             print(f"looping filesize: {fileSize}, proggress: {rProg}")
             sendChunkRequest(s,filename=filename,rProg=rProg)
