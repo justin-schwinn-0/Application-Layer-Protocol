@@ -28,7 +28,7 @@ def main():
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ##s.connect((renderIP, renderPort))
-    s.connect(serverIP, 31249) # For testing on local host
+    s.connect((serverIP, 31249)) # For testing on local host
     sendMsg(s, "controller connected")
 
     userInput = ""
