@@ -44,11 +44,11 @@ def main():
                 # Ask the server to render a file, send invalid to client if no file found
             elif message == "pause":
                 # Tell server to stop byte stream
-                print("pause recieved")
+                print("pause inactive, start rendering to use command")
 
             elif message == "resume": # Fix this
                 # Tell server to send next packet
-                print("resume recieved")
+                print("resume inactive, start rendering to use command")
 
                 ###
                 #if(filename == ""):
@@ -60,7 +60,7 @@ def main():
 
             elif message == "restart": # Fix this
                 # Ask server to render message from the start
-                print("restart recieved")
+                print("restart inactive, start rendering to use command")
                 
                 ###
                 #if(filename == ""):
@@ -137,7 +137,7 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
     paused = False
 
     while fileSize > rProg:
-        ready = select.select([c], [], [], 0.5) # Added
+        ready = select.select([c], [], [], 0.25) # Added
         if ready[0]:
             data = recieveMsg(c)
             if data == "pause":
@@ -150,12 +150,15 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
 
             elif data == "restart":
                 print("restarting stream")
-                rProg = 0
+                rProg = -1
+            elif data == "exit": # kinda iffy. May break code
+                print("exiting")
+                break
             else:
                 print("command not recognized")
         elif paused == False: 
             #time.sleep(0.5)
-            print(f"looping filesize: {fileSize}, proggress: {rProg}")
+            #print(f"looping filesize: {fileSize}, proggress: {rProg}")
             sendChunkRequest(s,filename=filename,rProg=rProg)
             #d = s.recv(DEFAULT_SEG_SIZE)
             d = recieveMsg(s)

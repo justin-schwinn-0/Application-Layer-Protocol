@@ -30,6 +30,7 @@ def main():
 
         ## Whole thing is pretty much broke. Fix it by adding in the separate commands again
         if userInput == "exit":
+            sendMsg(r,"exit")
             break
         elif userInput == "render":
             # Tells renderer to render a certain file

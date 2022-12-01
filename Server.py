@@ -63,9 +63,14 @@ def main():
                         fileSize = getFileSize(content[0])
                         print(f"the size of file {content[0]} is {fileSize}")
                         sendMsg(sock,f"{fileSize}")
-
-                    data = getMediaChunk(content[0],int(content[1]))
-                    sendMsg(sock,data)
+                        data = getMediaChunk(content[0],int(content[1]))
+                        sendMsg(sock,data)
+                    elif int(content[1] == -1):
+                        data = getMediaChunk(content[0],0)
+                        sendMsg(sock,data)
+                    else:
+                        data = getMediaChunk(content[0],int(content[1]))
+                        sendMsg(sock,data)
                     
                 else: # If none of the previous messages match, assume that message is filename to be rendered
                     print("Unknown command") # send stream to renderer if file found, else send invalid to renderer
