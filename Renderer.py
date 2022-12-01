@@ -120,12 +120,23 @@ def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
     sendMsg(s, serverCommand)
     return
 
-def sendClientChunk(s:socket.socket,c:socket.socket,filename:str,rProg:int):
+def sendClientChunk(s:socket.socket,c:socket.socket,filename:str,rProg:int): # This function is redundant remove and fix once everything is working
+    if rProg == 0:
+        print("progress is 0")
+        sendChunkRequest(s,filename=filename,rProg=rProg)
+        fileSize = int(recieveMsg(s))
+        print(f"Filesize: {fileSize}")
+        d = s.recv(DEFAULT_SEG_SIZE)
+        print(f"test {d}")
+        rProg += DEFAULT_SEG_SIZE
     
-    sendChunkRequest(s,filename=filename,rProg=rProg)
-    d = s.recv(DEFAULT_SEG_SIZE)
-    print(f"test {d}")
-    ##forwardMsg(sender=s,receiver=c)
+    while fileSize > rProg:
+        print("looping")
+        sendChunkRequest(s,filename=filename,rProg=rProg)
+        d = s.recv(DEFAULT_SEG_SIZE)
+        print(f"test {d}")
+        rProg += DEFAULT_SEG_SIZE
+        ##forwardMsg(sender=s,receiver=c)
 
 
 if __name__ == "__main__":

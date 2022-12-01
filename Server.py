@@ -55,6 +55,14 @@ def main():
                 elif cmd == "read": # format of read is 'read <file name> <byte offeset>'
                     
                     print(content)
+                    print("content printed")
+
+                    # Sends the length of the file to the renderer
+                    if int(content[1]) == 0:
+                        print("getting filesize")
+                        fileSize = getFileSize(content[0])
+                        print(f"the size of file {content[0]} is {fileSize}")
+                        sendMsg(sock,f"{fileSize}")
 
                     data = getMediaChunk(content[0],int(content[1]))
                     sendMsg(sock,data)
@@ -87,6 +95,17 @@ def sendMsg(sock:socket.socket, message):
     msg = f"{len(message):<{HEADERSIZE}}" + message
     sock.send(msg.encode())
 
+def getFileSize(filename:str):
+    fileList = os.listdir('files')
+
+    if(filename in fileList):
+        stats = os.stat(os.path.abspath(f"files\\{filename}"))
+        size = stats.st_size
+        print(f"filesize: {size}")
+        return size
+    else:
+        return "File not found"
+
 def getMediaList()-> str:
     
     fileList = os.listdir('files')
@@ -111,8 +130,8 @@ def getMediaChunk(filename:str, offset:int = 0)-> str :
 
     print(f"Start: {start}, End: {end}")
 
-    asdjha = data[start:end]
-    return asdjha
+    spot = data[start:end]
+    return spot
 
 def getFile(filename :str):
 
