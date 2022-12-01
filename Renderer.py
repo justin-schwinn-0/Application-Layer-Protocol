@@ -1,4 +1,6 @@
 import socket
+import select
+import time
 
 HEADERSIZE = 10
 DEFAULT_SEG_SIZE = 256
@@ -37,7 +39,7 @@ def main():
 
                 filename = recieveMsg(clientSocket) # receive file name
                 renderProgress = 0
-                sendClientChunk(s,clientSocket,filename,renderProgress)
+                renderFile(s,clientSocket,filename,renderProgress)
 
                 # Ask the server to render a file, send invalid to client if no file found
             elif message == "pause":
@@ -120,7 +122,7 @@ def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
     sendMsg(s, serverCommand)
     return
 
-def sendClientChunk(s:socket.socket,c:socket.socket,filename:str,rProg:int): # This function is redundant remove and fix once everything is working
+def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This function is redundant remove and fix once everything is working
     if rProg == 0:
         print("progress is 0")
         sendChunkRequest(s,filename=filename,rProg=rProg)
@@ -130,15 +132,26 @@ def sendClientChunk(s:socket.socket,c:socket.socket,filename:str,rProg:int): # T
         d = recieveMsg(s)
         print(f"test {d}")
         rProg += DEFAULT_SEG_SIZE
-    
+
+    c.setblocking(0) # Added to get the pause, resume, restart working
+
     while fileSize > rProg:
-        print(f"looping filesize: {fileSize}, proggress: {rProg}")
-        sendChunkRequest(s,filename=filename,rProg=rProg)
-        #d = s.recv(DEFAULT_SEG_SIZE)
-        d = recieveMsg(s)
-        print(f"test {d}")
-        rProg += DEFAULT_SEG_SIZE
-        ##forwardMsg(sender=s,receiver=c)
+        ready = select.select([c], [], [], 0.5) # Added
+        if ready[0]:
+            print("THIS WORKED!!!!\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Pausing works!!!!")
+            data = recieveMsg(c)
+            print(data)
+            break
+        else: 
+            #time.sleep(0.5)
+            print(f"looping filesize: {fileSize}, proggress: {rProg}")
+            sendChunkRequest(s,filename=filename,rProg=rProg)
+            #d = s.recv(DEFAULT_SEG_SIZE)
+            d = recieveMsg(s)
+            print(f"test {d}")
+            rProg += DEFAULT_SEG_SIZE
+            ##forwardMsg(sender=s,receiver=c)
+    c.setblocking(1)
 
 
 if __name__ == "__main__":
