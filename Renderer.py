@@ -42,7 +42,7 @@ def main():
 
                 filename = recieveMsg(clientSocket) # receive file name
                 renderProgress = 0
-                renderFile(s,clientSocket,filename,renderProgress)
+                renderFile2(s,clientSocket,filename,renderProgress)
 
                 # Ask the server to render a file, send invalid to client if no file found
             elif message == "pause":
@@ -137,6 +137,55 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
         #d = s.recv(DEFAULT_SEG_SIZE)
         d = recieveMsg(s)
         print(d)
+
+
+
+    c.setblocking(0) # Added to get the pause, resume, restart working
+    paused = False
+
+    while fileSize > rProg:
+        ready = select.select([c], [], [], 0.25) # Added
+        if ready[0]:
+            data = recieveMsg(c)
+            if data == "pause":
+                print("pausing stream")
+                paused = True
+
+            elif data == "resume": # Fix this
+                print("resuming stream")
+                paused = False
+
+            elif data == "restart":
+                print("restarting stream")
+                rProg = -1
+            elif data == "exit": # kinda iffy. May break code
+                print("exiting")
+                break
+            else:
+                print("command not recognized")
+        elif paused == False: 
+            #time.sleep(0.5)
+            #print(f"looping filesize: {fileSize}, proggress: {rProg}")
+            sendChunkRequest(s,filename=filename,rProg=rProg)
+            if rProg == -1:
+                rProg = 0
+            #d = s.recv(DEFAULT_SEG_SIZE)
+            d = recieveMsg(s)
+            print(f"test {d}")
+            rProg += DEFAULT_SEG_SIZE
+            ##forwardMsg(sender=s,receiver=c)
+    c.setblocking(1)
+
+def renderFile2(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This function is redundant remove and fix once everything is working
+    if rProg == 0:
+        print("progress is 0")
+        sendChunkRequest(s,filename=filename,rProg=rProg)
+        fileSize = int(recieveMsg(s))
+        print(f"Filesize: {fileSize}")
+        #d = s.recv(DEFAULT_SEG_SIZE)
+        d = recieveMsg(s)
+        print(f"test {d}")
+        rProg += DEFAULT_SEG_SIZE
 
     c.setblocking(0) # Added to get the pause, resume, restart working
     paused = False
