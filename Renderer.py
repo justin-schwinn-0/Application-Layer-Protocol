@@ -18,7 +18,7 @@ def main():
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ##s.connect((serverIP, serverPort))
-    s.connect((serverIP, 31249))
+    s.connect((serverIP, 32249))
     sendMsg(s, "renderer connected")
 
     r = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Binds the render to localhost port 1234
