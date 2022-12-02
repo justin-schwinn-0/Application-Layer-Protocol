@@ -88,7 +88,6 @@ def main():
         ready = select.select([clientSocket], [], [], 0.25)
         if(ready[0]):
             clientSocket.setblocking(1)
-            print("controller talked")
             message = recieveMsg(clientSocket)
             print(message)
 
@@ -96,8 +95,6 @@ def main():
                 print("Controller disconnected")
                 break
             elif message == "render":
-                
-                print("Render received")
 
                 filename = recieveMsg(clientSocket) # receive file name
                 renderProgress = 0
@@ -172,7 +169,6 @@ def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
 
 def renderFile3(s:socket.socket, c:socket.socket, filename:str,rProgress:int) -> int:
     sendChunkRequest(s,filename=filename,rProg=rProgress)
-    print("first one")
     d = recieveMsg(s)
     print(d)
 
