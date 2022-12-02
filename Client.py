@@ -24,7 +24,7 @@ def main():
 
     r = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ##r.connect((renderIP, renderPort))
-    r.connect((renderIP, renderIP)) # For testing on local host
+    r.connect((renderIP, renderPort)) # For testing on local host
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ##s.connect((renderIP, renderPort))
