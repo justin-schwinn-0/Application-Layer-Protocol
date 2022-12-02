@@ -87,6 +87,7 @@ def main():
         clientSocket.setblocking(0)
         ready = select.select([clientSocket], [], [], 0.25)
         if(ready[0]):
+            print("controller talked")
             message = recieveMsg(clientSocket)
             print(message)
 
