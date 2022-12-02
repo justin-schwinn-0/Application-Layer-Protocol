@@ -120,13 +120,14 @@ def sendMsg(sock:socket.socket, message:str):
 def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
     
     serverCommand = f"read {filename} {rProg}"
+    print(f"Sending Server command: {serverCommand}")
     sendMsg(s, serverCommand)
-    return
 
 def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This function is redundant remove and fix once everything is working
     if rProg == 0:
         sendChunkRequest(s,filename=filename,rProg=rProg)
         fileSize = recieveMsg(s)
+        print(fileSize)
         #d = s.recv(DEFAULT_SEG_SIZE)
         d = recieveMsg(s)
         print(d)
