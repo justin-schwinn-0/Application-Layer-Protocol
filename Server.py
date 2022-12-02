@@ -102,6 +102,7 @@ def sendMsg(sock:socket.socket, message):
     print(f"sending: {message}")
     msg = f"{len(message):<{HEADERSIZE}}" + message
     sock.send(msg.encode())
+    print("sent!")
 
 def getFileSize(filename:str):
     fileList = os.listdir('files')
