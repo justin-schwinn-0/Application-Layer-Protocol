@@ -122,7 +122,7 @@ def sendMsg(sock:socket.socket, message:str):
 def recieveMsg(sock:socket.socket)-> str:
     return sock.recv(DEFAULT_SEG_SIZE)
 
-def sendMsg(sock:socket.socket, message:str):
+def sendMsg(sock:socket.socket, message):
     sock.send(message.encode())
 
 
