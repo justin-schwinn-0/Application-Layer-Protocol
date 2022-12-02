@@ -64,14 +64,11 @@ def main():
                 # Ask server to render message from the start
                 print("restart inactive, start rendering to use command")
                 
-                ###
-                #if(filename == ""):
-                    #sendMsg(clientSocket,"Must choose a file to render first")
-                #else:
-                    #renderProgress = 0
-                    #sendClientChunk(s,clientSocket,filename,renderProgress)
-                ###
-
+                if(filename == ""):
+                    sendMsg(clientSocket,"Must choose a file to render first")
+                else:
+                    renderProgress = 0
+                    renderProgress += renderFile3(s,clientSocket,filename,renderProgress)
             ###
             #elif message == "list" : # unecessary delete once you fix the issue
                 #print("list recieved")
