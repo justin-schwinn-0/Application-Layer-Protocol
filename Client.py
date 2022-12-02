@@ -10,7 +10,7 @@ renderPort = 32250
 
 HEADERSIZE = 10
 
-DEFAULT_SEG_SIZE = 256
+DEFAULT_SEG_SIZE = 10
 
 COMMANDS = ["list","render","pause","resume","restart","exit"]
 

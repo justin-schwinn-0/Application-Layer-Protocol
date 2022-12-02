@@ -4,7 +4,7 @@ import sys
 import os
 
 HEADERSIZE = 10
-DEFAULT_SEG_SIZE = 256
+DEFAULT_SEG_SIZE = 10
 
 serverIP = "gfhjbmjkhgkvb"
 
