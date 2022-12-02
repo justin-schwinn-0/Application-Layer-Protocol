@@ -149,9 +149,11 @@ def renderFile3(s:socket.socket, c:socket.socket, filename:str,rProgress:int):
 def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This function is redundant remove and fix once everything is working
     if rProg == 0:
         sendChunkRequest(s,filename=filename,rProg=rProg)
+        print("first one")
         fileSize = recieveMsg(s)
         print(fileSize)
         #d = s.recv(DEFAULT_SEG_SIZE)
+        print("second one")
         d = recieveMsg(s)
         print(d)
         rProg += DEFAULT_SEG_SIZE
