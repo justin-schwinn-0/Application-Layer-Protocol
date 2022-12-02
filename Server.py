@@ -109,6 +109,7 @@ def recieveMsg(sock:socket.socket)-> str:
     return sock.recv(DEFAULT_SEG_SIZE).decode()
 
 def sendMsg(sock:socket.socket, message):
+    print(message)
     sock.send(message.encode())
 
 
