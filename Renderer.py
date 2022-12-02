@@ -133,9 +133,8 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
         print(f"Filesize: {fileSize}")
         #d = s.recv(DEFAULT_SEG_SIZE)
         d = recieveMsg(s)
-        print(f"length of chunk {len(d)}")
+        print(d)
 
-        sendMsg(c,d.encode())
         rProg += DEFAULT_SEG_SIZE
 
     c.setblocking(0) # Added to get the pause, resume, restart working
