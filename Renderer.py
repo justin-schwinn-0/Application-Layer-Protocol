@@ -114,6 +114,7 @@ def recieveMsg(sock:socket.socket)-> str:
         return False
 
 def sendMsg(sock:socket.socket, message:str):
+    print(f"gets to send {message}")
     msg = f"{len(message):<{HEADERSIZE}}" + message
     sock.send(msg.encode())
 
@@ -122,7 +123,7 @@ def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
     serverCommand = f"read {filename} {rProg}"
 
     print(f"sending: {serverCommand}")
-    print("gets here")
+    print("gets here chunk request")
     sendMsg(s, serverCommand)
     return
 
