@@ -130,12 +130,11 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
         print("progress is 0")
         sendChunkRequest(s,filename=filename,rProg=rProg)
         fileSize = int(recieveMsg(s))
+        print(fileSize)
         print(f"Filesize: {fileSize}")
         #d = s.recv(DEFAULT_SEG_SIZE)
         d = recieveMsg(s)
         print(d)
-
-        rProg += DEFAULT_SEG_SIZE
 
     c.setblocking(0) # Added to get the pause, resume, restart working
     paused = False
