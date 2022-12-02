@@ -94,6 +94,7 @@ def recieveMsg(sock:socket.socket)-> str:
             fullMsg += msg.decode("utf-8")
 
             if len(fullMsg) - HEADERSIZE == msgLen:
+                print(fullMsg)
                 return fullMsg[HEADERSIZE:]
     except:
         return False
