@@ -47,6 +47,7 @@ def main():
                     continue
                 
                 msgsplits = message.split(" ")
+                print(msgsplits)
                 cmd = msgsplits[0].lower()
                 content = msgsplits[1:]
 
@@ -57,7 +58,6 @@ def main():
                     
                 elif cmd == "read": # format of read is 'read <file name> <byte offeset>'
                     
-                    print(content)
                     print("content printed")
 
                     # Sends the length of the file to the renderer

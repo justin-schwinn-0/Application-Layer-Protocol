@@ -164,7 +164,7 @@ def sendMsg(sock:socket.socket, message):
 def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
     
     serverCommand = f"read {filename} {rProg}"
-    #print(f"Sending Server command: {serverCommand}")
+    print(f"Sending Server command: {serverCommand}")
     sendMsg(s, serverCommand)
 
 def renderFile3(s:socket.socket, c:socket.socket, filename:str,rProgress:int) -> int:
