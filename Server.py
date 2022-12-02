@@ -62,10 +62,7 @@ def main():
 
                     # Sends the length of the file to the renderer
                     if int(content[1]) == 0:
-                        print("getting filesize")
-                        fileSize = getFileSize(content[0])
-                        print(f"the size of file {content[0]} is {fileSize}")
-                        sendMsg(sock,f"{fileSize}")
+                        
                         data = getMediaChunk(content[0],int(content[1]))
                         sendMsg(sock,data)
                     elif int(content[1]) == -1:

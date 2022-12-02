@@ -31,6 +31,7 @@ def main():
 
     renderProgress = int()
     filename = ""
+    paused = False
 
     clientSocket, clientAddress = r.accept()
     while True: # May need to use select to manage connections if issues arise
@@ -41,8 +42,7 @@ def main():
                 print("Render received")
 
                 filename = recieveMsg(clientSocket) # receive file name
-                renderProgress = 0
-                renderFile3(s,clientSocket,filename,renderProgress)
+                renderProgress += renderFile3(s,clientSocket,filename,renderProgress)
 
                 # Ask the server to render a file, send invalid to client if no file found
             elif message == "pause":
@@ -138,7 +138,7 @@ def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
     #print(f"Sending Server command: {serverCommand}")
     sendMsg(s, serverCommand)
 
-def renderFile3(s:socket.socket, c:socket.socket, filename:str,rProgress:int):
+def renderFile3(s:socket.socket, c:socket.socket, filename:str,rProgress:int) -> int:
     sendChunkRequest(s,filename=filename,rProg=rProgress)
     print("first one")
     fs = recieveMsg(s)
@@ -146,6 +146,8 @@ def renderFile3(s:socket.socket, c:socket.socket, filename:str,rProgress:int):
     print("second one")
     d = recieveMsg(s)
     print(d)
+
+    return len(d)
 
 
 def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This function is redundant remove and fix once everything is working
