@@ -105,7 +105,7 @@ def sendMsg(sock:socket.socket, message):
     sock.send(msg.encode())
     print("sent!")
 
-def getFileSize(filename:str):
+def getFileSize(filename:str) -> str:
     fileList = os.listdir('files')
 
     if(filename in fileList):
