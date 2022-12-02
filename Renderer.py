@@ -120,9 +120,14 @@ def sendMsg(sock:socket.socket, message:str):
 """
 
 def recieveMsg(sock:socket.socket)-> str:
-    return sock.recv(DEFAULT_SEG_SIZE).decode()
+    msg = sock.recv(DEFAULT_SEG_SIZE).decode()
+    if(msg == ""):
+        sock.close()
+        return "ERROR: SOCKET CLOSED"
+    return msg
 
 def sendMsg(sock:socket.socket, message):
+    print(message)
     sock.send(message.encode())
 
 
