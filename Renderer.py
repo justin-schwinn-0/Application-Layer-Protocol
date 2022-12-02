@@ -23,7 +23,7 @@ def main():
 
     r = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Binds the render to localhost port 1234
     ##r.bind((socket.gethostname(), 1235)) 
-    r.bind((renderIP, 31250))
+    r.bind((renderIP, 32250))
     r.listen(5)
 
     

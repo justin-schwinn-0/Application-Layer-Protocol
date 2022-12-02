@@ -14,7 +14,7 @@ def main():
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Binds the render to localhost port 1234
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind((serverIP, 31249)) 
+    s.bind((serverIP, 32249)) 
     s.listen(5)
 
     socketList = [s] # This is probably unecessary, but storing the list of all connected clients for now

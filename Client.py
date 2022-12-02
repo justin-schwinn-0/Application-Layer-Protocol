@@ -3,10 +3,10 @@ import sys
 
 
 serverIP = ""
-serverPort = 31249
+serverPort = 32249
 
 renderIP = ""
-renderPort = 31250
+renderPort = 32250
 
 HEADERSIZE = 10
 
