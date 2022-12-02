@@ -42,7 +42,7 @@ def main():
 
                 filename = recieveMsg(clientSocket) # receive file name
                 renderProgress = 0
-                renderFile2(s,clientSocket,filename,renderProgress)
+                renderFile(s,clientSocket,filename,renderProgress)
 
                 # Ask the server to render a file, send invalid to client if no file found
             elif message == "pause":
@@ -109,31 +109,24 @@ def recieveMsg(sock:socket.socket)-> str:
             fullMsg += msg.decode("utf-8")
 
             if len(fullMsg) - HEADERSIZE == msgLen:
-                print(f"recv {fullMsg}")
                 return fullMsg[HEADERSIZE:]
     except:
         return False
 
 def sendMsg(sock:socket.socket, message:str):
-    print(f"gets to send {message}")
     msg = f"{len(message):<{HEADERSIZE}}" + message
     sock.send(msg.encode())
 
 def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
     
     serverCommand = f"read {filename} {rProg}"
-
-    print(f"sending: {serverCommand}")
-    print("gets here chunk request")
     sendMsg(s, serverCommand)
     return
 
 def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This function is redundant remove and fix once everything is working
     if rProg == 0:
-        print("progress is 0")
         sendChunkRequest(s,filename=filename,rProg=rProg)
         fileSize = recieveMsg(s)
-        print(f"Filesize: {fileSize}")
         #d = s.recv(DEFAULT_SEG_SIZE)
         d = recieveMsg(s)
         print(d)
