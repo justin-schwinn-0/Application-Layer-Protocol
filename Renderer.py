@@ -85,7 +85,7 @@ def main():
 
     while True:
         clientSocket.setblocking(0)
-        ready = select.select([c], [], [], 0.25)
+        ready = select.select([clientSocket], [], [], 0.25)
         if(ready[0]):
             message = recieveMsg(clientSocket)
             print(message)
