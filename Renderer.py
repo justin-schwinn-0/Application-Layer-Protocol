@@ -34,6 +34,8 @@ def main():
     paused = False
 
     clientSocket, clientAddress = r.accept()
+    
+    """
     while True: # May need to use select to manage connections if issues arise
         message = recieveMsg(clientSocket)
         print(message)
@@ -79,9 +81,41 @@ def main():
         else:
             print("Connection was forcibly closed")
             break
+    """
+
+    while True:
+        clientSocket.setblocking(0)
+        ready = select.select([c], [], [], 0.25)
+        if(ready[0]):
+            message = recieveMsg(clientSocket)
+            print(message)
+
+            if(message == ""):
+                print("Controller disconnected")
+                break
+            elif message == "render":
+                
+                print("Render received")
+
+                filename = recieveMsg(clientSocket) # receive file name
+                renderProgress = 0
+            elif message == "pause":
+                paused = True
+            elif message == "resume":
+                paused = False
+            elif message == "restart": # Fix this
+                # Ask server to render message from the start
+                renderProgress = 0
+        
+        if not paused and filename != "":
+            renderProgress += renderFile3(s,clientSocket,filename,renderProgress)
+
+
 
     # Find a way to break code once client disconnects from renderer
     s.close()
+
+
 
 ###
 #def forwardMsg(sender:socket.socket, receiver:socket.socket): # Not necessary
