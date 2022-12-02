@@ -131,7 +131,7 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
     if rProg == 0:
         print("progress is 0")
         sendChunkRequest(s,filename=filename,rProg=rProg)
-        fileSize = int(recieveMsg(s))
+        fileSize = recieveMsg(s)
         print(f"Filesize: {fileSize}")
         #d = s.recv(DEFAULT_SEG_SIZE)
         d = recieveMsg(s)
