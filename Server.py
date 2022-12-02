@@ -106,10 +106,11 @@ def sendMsg(sock:socket.socket, message):
     print("sent!")
 """
 def recieveMsg(sock:socket.socket)-> str:
-    return sock.recv(DEFAULT_SEG_SIZE)
+    return sock.recv(DEFAULT_SEG_SIZE).decode()
 
 def sendMsg(sock:socket.socket, message):
     sock.send(message.encode())
+
 
 def getFileSize(filename:str) -> str:
     fileList = os.listdir('files')

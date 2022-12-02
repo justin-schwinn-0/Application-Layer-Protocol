@@ -120,10 +120,11 @@ def sendMsg(sock:socket.socket, message:str):
 """
 
 def recieveMsg(sock:socket.socket)-> str:
-    return sock.recv(DEFAULT_SEG_SIZE)
+    return sock.recv(DEFAULT_SEG_SIZE).decode()
 
 def sendMsg(sock:socket.socket, message):
     sock.send(message.encode())
+
 
 
 def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
