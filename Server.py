@@ -7,6 +7,7 @@ import os
 SEG_SIZE = 50
 MIN_SEG_SIZE = 25
 
+
 serverIP = "gfhjbmjkhgkvb"
 
 def main():

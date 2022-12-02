@@ -9,6 +9,8 @@ renderIP = ""
 SEG_SIZE = 50
 MIN_SEG_SIZE = 25
 
+POLLING_TIME = 1.0
+
 COMMANDS = ["list","render","pause","resume","restart","exit"]
 
 
@@ -87,7 +89,7 @@ def main():
 
     while True:
         clientSocket.setblocking(0)
-        ready = select.select([clientSocket], [], [], 1) # select the socket if it has recived a message
+        ready = select.select([clientSocket], [], [], POLLING_TIME) # select the socket if it has recived a message
         if(ready[0]):
             clientSocket.setblocking(1) #set the socket back to blocking
             message = recieveMsg(clientSocket)
