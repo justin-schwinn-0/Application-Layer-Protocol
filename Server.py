@@ -3,8 +3,9 @@ import select
 import sys
 import os
 
-HEADERSIZE = 10
-DEFAULT_SEG_SIZE = 50
+
+SEG_SIZE = 50
+MIN_SEG_SIZE = 25
 
 serverIP = "gfhjbmjkhgkvb"
 
@@ -103,7 +104,7 @@ def sendMsg(sock:socket.socket, message):
     print("sent!")
 """
 def recieveMsg(sock:socket.socket)-> str:
-    msg = sock.recv(DEFAULT_SEG_SIZE).decode()
+    msg = sock.recv(SEG_SIZE).decode()
     if(msg == ""):
         sock.close()
         return "ERROR: SOCKET CLOSED"
@@ -145,7 +146,7 @@ def getMediaChunk(filename:str, offset:int = 0)-> str :
     data = getFile(filename)
 
     start = offset if offset < len(data) else len(data)
-    end = offset + DEFAULT_SEG_SIZE if(offset + DEFAULT_SEG_SIZE < len(data)) else len(data)
+    end = offset + SEG_SIZE if(offset + SEG_SIZE < len(data)) else len(data)
 
     print(f"Start: {start}, End: {end}")
 
@@ -173,6 +174,9 @@ if __name__ == "__main__":
     #print(getFile('stuff.txt'))
     #print()
     #print(getMediaChunk("stuff.txt"))
+
+    if(SEG_SIZE <= MIN_SEG_SIZE):
+        SEG_SIZE = MIN_SEG_SIZE
 
     if(len(sys.argv) != 2):
         print("Invalid arguments, try Server.py <server IP>")

@@ -8,9 +8,9 @@ serverPort = 32249
 renderIP = ""
 renderPort = 32250
 
-HEADERSIZE = 10
 
-DEFAULT_SEG_SIZE = 50
+SEG_SIZE = 50
+MIN_SEG_SIZE = 25
 
 COMMANDS = ["list","render","pause","resume","restart","exit"]
 
@@ -98,7 +98,7 @@ def sendMsg(sock:socket.socket, message:str):
     sock.send(msg.encode())
 """
 def recieveMsg(sock:socket.socket)-> str:
-    msg = sock.recv(DEFAULT_SEG_SIZE).decode()
+    msg = sock.recv(SEG_SIZE).decode()
     if(msg == ""):
         sock.close()
         return "ERROR: SOCKET CLOSED"
@@ -111,7 +111,10 @@ def sendMsg(sock:socket.socket, message):
 
 
 if __name__ == "__main__":
-    print("test")
+    
+    if(SEG_SIZE <= MIN_SEG_SIZE):
+        SEG_SIZE = MIN_SEG_SIZE
+
     if(len(sys.argv) != 3):
         print("Invalid arguments, try Client.py <Server IP> <Renderer IP>")
         exit()

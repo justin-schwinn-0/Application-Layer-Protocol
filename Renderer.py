@@ -5,11 +5,13 @@ import sys
 serverIP = "gfhjbmjkhgkvb"
 renderIP = ""
 
-HEADERSIZE = 10
-DEFAULT_SEG_SIZE = 50
+
+SEG_SIZE = 50
+MIN_SEG_SIZE = 25
+
 COMMANDS = ["list","render","pause","resume","restart","exit"]
 
-afnjk = "sendlist"
+
 def main():
     ###
     #serverIP = input("Server IP: ")
@@ -85,9 +87,9 @@ def main():
 
     while True:
         clientSocket.setblocking(0)
-        ready = select.select([clientSocket], [], [], 1)
+        ready = select.select([clientSocket], [], [], 1) # select the socket if it has recived a message
         if(ready[0]):
-            clientSocket.setblocking(1)
+            clientSocket.setblocking(1) #set the socket back to blocking
             message = recieveMsg(clientSocket)
             print(message)
 
@@ -118,7 +120,7 @@ def main():
 
 ###
 #def forwardMsg(sender:socket.socket, receiver:socket.socket): # Not necessary
-    #d = sender.recv(DEFAULT_SEG_SIZE)
+    #d = sender.recv(SEG_SIZE)
     #print(f"test {d}")
     #receiver.send(d) # No longer needed
     #return
@@ -130,7 +132,7 @@ def recieveMsg(sock:socket.socket)-> str:
         msgLen = 0
         newMsg = True
         while True:
-            msg = sock.recv(DEFAULT_SEG_SIZE + 10)
+            msg = sock.recv(SEG_SIZE + 10)
             if newMsg:
                 msgLen = int(msg[:HEADERSIZE])
                 newMsg = False
@@ -149,7 +151,7 @@ def sendMsg(sock:socket.socket, message:str):
 """
 
 def recieveMsg(sock:socket.socket)-> str:
-    msg = sock.recv(DEFAULT_SEG_SIZE).decode()
+    msg = sock.recv(SEG_SIZE).decode()
     if(msg == ""):
         sock.close()
         return "ERROR: SOCKET CLOSED"
@@ -174,18 +176,18 @@ def renderFile3(s:socket.socket, c:socket.socket, filename:str,rProgress:int) ->
 
     return len(d)
 
-
-def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This function is redundant remove and fix once everything is working
+"""
+def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # depricated
     if rProg == 0:
         sendChunkRequest(s,filename=filename,rProg=rProg)
         
         fileSize = recieveMsg(s)
         print(fileSize)
-        #d = s.recv(DEFAULT_SEG_SIZE)
+        #d = s.recv(SEG_SIZE)
         
         d = recieveMsg(s)
         print(d)
-        rProg += DEFAULT_SEG_SIZE
+        rProg += SEG_SIZE
 
 
 
@@ -218,23 +220,23 @@ def renderFile(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This
             sendChunkRequest(s,filename=filename,rProg=rProg)
             if rProg == -1:
                 rProg = 0
-            #d = s.recv(DEFAULT_SEG_SIZE)
+            #d = s.recv(SEG_SIZE)
             d = recieveMsg(s)
             print(f"test {d}")
-            rProg += DEFAULT_SEG_SIZE
+            rProg += SEG_SIZE
             ##forwardMsg(sender=s,receiver=c)
     c.setblocking(1)
 
-def renderFile2(s:socket.socket, c:socket.socket, filename:str,rProg:int): # This function is redundant remove and fix once everything is working
+def renderFile2(s:socket.socket, c:socket.socket, filename:str,rProg:int): # depricated
     if rProg == 0:
         print("progress is 0")
         sendChunkRequest(s,filename=filename,rProg=rProg)
         fileSize = int(recieveMsg(s))
         print(f"Filesize: {fileSize}")
-        #d = s.recv(DEFAULT_SEG_SIZE)
+        #d = s.recv(SEG_SIZE)
         d = recieveMsg(s)
         print(f"test {d}")
-        rProg += DEFAULT_SEG_SIZE
+        rProg += SEG_SIZE
 
     c.setblocking(0) # Added to get the pause, resume, restart working
     paused = False
@@ -265,17 +267,21 @@ def renderFile2(s:socket.socket, c:socket.socket, filename:str,rProg:int): # Thi
             sendChunkRequest(s,filename=filename,rProg=rProg)
             if rProg == -1:
                 rProg = 0
-            #d = s.recv(DEFAULT_SEG_SIZE)
+            #d = s.recv(SEG_SIZE)
             d = recieveMsg(s)
             print(f"test {d}")
-            rProg += DEFAULT_SEG_SIZE
+            rProg += SEG_SIZE
             ##forwardMsg(sender=s,receiver=c)
     c.setblocking(1)
-
+"""
 
 if __name__ == "__main__":
+
+    if(SEG_SIZE <= MIN_SEG_SIZE):
+        SEG_SIZE = MIN_SEG_SIZE
+
     if(len(sys.argv) != 3):
-        print("Invalid arguments, try Rednerer.py <server IP> <Renderer IP>")
+        print("Invalid arguments, try Rednerer.py <Server IP> <Renderer IP>")
         exit()
     else:
         serverIP = sys.argv[1]
