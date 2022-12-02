@@ -51,15 +51,14 @@ def main():
 
             elif message == "resume": # Fix this
                 # Tell server to send next packet
-                print("resume inactive, start rendering to use command")
+                print("resume to get next segment")
 
-                ###
-                #if(filename == ""):
-                    #sendMsg(clientSocket,"Must choose a file to render first")
-                #else:
-                    #renderProgress+=DEFAULT_SEG_SIZE
-                    #sendClientChunk(s,clientSocket,filename,renderProgress)
-                ###
+                
+                if(filename == ""):
+                    sendMsg(clientSocket,"Must choose a file to render first")
+                else:
+                    renderProgress += renderFile3(s,clientSocket,filename,renderProgress)
+                
 
             elif message == "restart": # Fix this
                 # Ask server to render message from the start
@@ -141,9 +140,6 @@ def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
 def renderFile3(s:socket.socket, c:socket.socket, filename:str,rProgress:int) -> int:
     sendChunkRequest(s,filename=filename,rProg=rProgress)
     print("first one")
-    fs = recieveMsg(s)
-    print(fs)
-    print("second one")
     d = recieveMsg(s)
     print(d)
 
