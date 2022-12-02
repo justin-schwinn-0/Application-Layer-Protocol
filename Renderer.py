@@ -94,7 +94,7 @@ def main():
     #receiver.send(d) # No longer needed
     #return
 ###
-
+"""
 def recieveMsg(sock:socket.socket)-> str:
     try:
         fullMsg = ""
@@ -117,6 +117,14 @@ def sendMsg(sock:socket.socket, message:str):
     msg = f"{len(message):<{HEADERSIZE}}" + message
     sock.send(msg.encode())
     print(f"sent: {msg}")
+"""
+
+def recieveMsg(sock:socket.socket)-> str:
+    return sock.recv(DEFAULT_SEG_SIZE)
+
+def sendMsg(sock:socket.socket, message:str):
+    sock.send(message.encode())
+
 
 def sendChunkRequest(s:socket.socket,filename:str,rProg:int):
     

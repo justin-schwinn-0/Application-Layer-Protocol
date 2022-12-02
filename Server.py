@@ -79,7 +79,7 @@ def main():
                     print("Unknown command") # send stream to renderer if file found, else send invalid to renderer
 
 
-
+"""
 def recieveMsg(sock:socket.socket)-> str:
     try:
         fullMsg = ""
@@ -104,6 +104,12 @@ def sendMsg(sock:socket.socket, message):
     msg = f"{len(message):<{HEADERSIZE}}" + message
     sock.send(msg.encode())
     print("sent!")
+"""
+def recieveMsg(sock:socket.socket)-> str:
+    return sock.recv(DEFAULT_SEG_SIZE)
+
+def sendMsg(sock:socket.socket, message:str):
+    sock.send(message.encode())
 
 def getFileSize(filename:str) -> str:
     fileList = os.listdir('files')

@@ -74,7 +74,7 @@ def printCommands():
     for s in COMMANDS:
         line += s + " "
     print(line+"\n")
-
+"""
 def recieveMsg(sock:socket.socket)-> str:
     try:
         fullMsg = ""
@@ -96,6 +96,13 @@ def recieveMsg(sock:socket.socket)-> str:
 def sendMsg(sock:socket.socket, message:str):
     msg = f"{len(message):<{HEADERSIZE}}" + message
     sock.send(msg.encode())
+"""
+def recieveMsg(sock:socket.socket)-> str:
+    return sock.recv(DEFAULT_SEG_SIZE)
+
+def sendMsg(sock:socket.socket, message:str):
+    sock.send(message.encode())
+
 
 if __name__ == "__main__":
     print("test")
