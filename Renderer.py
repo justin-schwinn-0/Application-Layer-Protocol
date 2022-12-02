@@ -6,7 +6,7 @@ serverIP = "gfhjbmjkhgkvb"
 renderIP = ""
 
 HEADERSIZE = 10
-DEFAULT_SEG_SIZE = 10
+DEFAULT_SEG_SIZE = 50
 COMMANDS = ["list","render","pause","resume","restart","exit"]
 
 afnjk = "sendlist"
@@ -85,7 +85,7 @@ def main():
 
     while True:
         clientSocket.setblocking(0)
-        ready = select.select([clientSocket], [], [], 0.25)
+        ready = select.select([clientSocket], [], [], 1)
         if(ready[0]):
             clientSocket.setblocking(1)
             message = recieveMsg(clientSocket)
